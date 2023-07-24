@@ -28,6 +28,8 @@ const slice = createSlice({
     enableInContext: false,
     enableGradedUnits: false,
     unitLevelVisibility: false,
+    postingRestrictions: null,
+    enabled: true,
   },
   reducers: {
     loadApps: (state, { payload }) => {
