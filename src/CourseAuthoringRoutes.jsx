@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, useRouteMatch } from 'react-router';
 import { PageRoute } from '@edx/frontend-platform/react';
-import Placeholder from '@edx/frontend-lib-content-components';
+import Placeholder from '@johnvente/frontend-lib-content-components';
 import CourseAuthoringPage from './CourseAuthoringPage';
 import { PagesAndResources } from './pages-and-resources';
 import ProctoredExamSettings from './proctored-exam-settings/ProctoredExamSettings';

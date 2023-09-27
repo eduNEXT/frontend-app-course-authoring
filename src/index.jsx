@@ -11,7 +11,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { initializeHotjar } from '@edx/frontend-enterprise-hotjar';
 import { logError } from '@edx/frontend-platform/logging';
-import Placeholder from '@edx/frontend-lib-content-components';
+import Placeholder from '@johnvente/frontend-lib-content-components';
 import messages from './i18n';
 
 import initializeStore from './store';

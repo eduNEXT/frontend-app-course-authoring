@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import VideoSelectorContainer from './VideoSelectorContainer';
 
-jest.mock('@edx/frontend-lib-content-components', () => ({ VideoSelectorPage: () => 'HeaderTitle' }));
+jest.mock('@johnvente/frontend-lib-content-components', () => ({ VideoSelectorPage: () => 'HeaderTitle' }));
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'), // use actual for all non-hook parts

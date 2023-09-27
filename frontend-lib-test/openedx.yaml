@@ -1,8 +1,0 @@
-# openedx.yaml
-
----
-owner: edx/teaching-and-learning
-tags:
-  - library
-  - component
-  - react

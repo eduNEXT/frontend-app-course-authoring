@@ -36,7 +36,7 @@ jest.mock('@tinymce/tinymce-react', () => {
 });
 
 // Mock the TinyMceWidget from frontend-lib-content-components
-jest.mock('@edx/frontend-lib-content-components', () => ({
+jest.mock('@johnvente/frontend-lib-content-components', () => ({
   TinyMceWidget: () => <div>Widget</div>,
   prepareEditorRef: jest.fn(() => ({
     refReady: true,

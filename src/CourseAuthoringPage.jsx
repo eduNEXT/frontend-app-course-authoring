@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   useLocation,
 } from 'react-router-dom';
-import { Footer } from '@edx/frontend-lib-content-components';
+import { Footer } from '@johnvente/frontend-lib-content-components';
 import Header from './studio-header/Header';
 import { fetchCourseDetail } from './data/thunks';
 import { useModel } from './generic/model-store';

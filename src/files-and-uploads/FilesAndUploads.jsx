@@ -11,7 +11,7 @@ import {
   CardView,
   useToggle,
 } from '@edx/paragon';
-import Placeholder, { ErrorAlert } from '@edx/frontend-lib-content-components';
+import Placeholder, { ErrorAlert } from '@johnvente/frontend-lib-content-components';
 
 import { RequestStatus } from '../data/constants';
 import { useModels } from '../generic/model-store';

@@ -6,7 +6,7 @@ import {
 } from '@edx/paragon';
 import { CheckCircle, Info, Warning } from '@edx/paragon/icons';
 import { FormattedMessage, injectIntl, intlShape } from '@edx/frontend-platform/i18n';
-import Placeholder from '@edx/frontend-lib-content-components';
+import Placeholder from '@johnvente/frontend-lib-content-components';
 
 import AlertProctoringError from '../generic/AlertProctoringError';
 import InternetConnectionAlert from '../generic/internet-connection-alert';

@@ -6,7 +6,7 @@ import { getConfig } from '@edx/frontend-platform';
 import {
   prepareEditorRef,
   TinyMceWidget,
-} from '@edx/frontend-lib-content-components';
+} from '@johnvente/frontend-lib-content-components';
 
 import { DEFAULT_EMPTY_WYSIWYG_VALUE } from '../constants';
 

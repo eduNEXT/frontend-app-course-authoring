@@ -9,7 +9,7 @@ import {
   Warning as WarningIcon,
 } from '@edx/paragon/icons';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
-import Placeholder from '@edx/frontend-lib-content-components';
+import Placeholder from '@johnvente/frontend-lib-content-components';
 
 import { RequestStatus } from '../data/constants';
 import AlertMessage from '../generic/alert-message';

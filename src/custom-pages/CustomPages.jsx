@@ -23,7 +23,7 @@ import Placeholder, {
   DraggableList,
   SortableItem,
   ErrorAlert,
-} from '@edx/frontend-lib-content-components';
+} from '@johnvente/frontend-lib-content-components';
 
 import { RequestStatus } from '../data/constants';
 import { useModels } from '../generic/model-store';
