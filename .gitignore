@@ -20,3 +20,5 @@ temp/babel-plugin-react-intl
 /temp
 /.vscode
 frontend-lib-content-components/node_modules
+frontend-lib-test/node_modules
+node_modules
