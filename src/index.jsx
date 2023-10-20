@@ -7,7 +7,11 @@ import {
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 
 import { initializeHotjar } from '@edx/frontend-enterprise-hotjar';
 import { logError } from '@edx/frontend-platform/logging';
@@ -21,6 +25,8 @@ import CourseRerun from './course-rerun';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './index.scss';
+
+const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
@@ -39,30 +45,14 @@ const App = () => {
 
   return (
     <AppProvider store={initializeStore()}>
-      <Head />
-      <Switch>
-        <Route path="/home">
-          <StudioHome />
-        </Route>
-        <Route
-          path="/course/:courseId"
-          render={({ match }) => {
-            const { params: { courseId } } = match;
-            return (
-              <CourseAuthoringRoutes courseId={courseId} />
-            );
-          }}
-        />
-        <Route
-          path="/course_rerun/:courseId"
-          render={({ match }) => {
-            const { params: { courseId } } = match;
-            return (
-              <CourseRerun courseId={courseId} />
-            );
-          }}
-        />
-      </Switch>
+      <QueryClientProvider client={queryClient}>
+        <Head />
+        <Routes>
+          <Route path="/home" element={<StudioHome />} />
+          <Route path="/course/:courseId/*" element={<CourseAuthoringRoutes />} />
+          <Route path="/course_rerun/:courseId" element={<CourseRerun />} />
+        </Routes>
+      </QueryClientProvider>
     </AppProvider>
   );
 };
