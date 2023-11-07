@@ -34,6 +34,7 @@ export const GroupTypes = {
   OPEN: 'open',
   PUBLIC_MANAGED: 'public_managed',
   PRIVATE_MANAGED: 'private_managed',
+  OPEN_MANAGED: 'open_managed',
 };
 
 export const DivisionSchemes = {
