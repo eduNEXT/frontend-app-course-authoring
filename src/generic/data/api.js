@@ -4,7 +4,9 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { convertObjectToSnakeCase } from '../../utils';
 
 export const getApiBaseUrl = () => getConfig().STUDIO_BASE_URL;
+
 let getCreateOrRerunCourseUrlFormat;
+let getOrganizationsUrlFormat;
 
 try {
   getCreateOrRerunCourseUrlFormat = new URL('course/', getApiBaseUrl()).href;
@@ -13,9 +15,28 @@ try {
   getCreateOrRerunCourseUrlFormat = `${getApiBaseUrl()}course/`;
 }
 
+try {
+  getOrganizationsUrlFormat = new URL('organizations', getApiBaseUrl()).href;
+} catch (error) {
+  // If constructing URL fails, use template string as a fallback
+  getOrganizationsUrlFormat = `${getApiBaseUrl()}organizations`;
+}
+
 export const getCreateOrRerunCourseUrl = getCreateOrRerunCourseUrlFormat;
-export const getCourseRerunUrl = (courseId) => new URL(`/api/contentstore/v1/course_rerun/${courseId}`, getApiBaseUrl()).href;
-export const getOrganizationsUrl = new URL('organizations', getApiBaseUrl()).href;
+export const getCourseRerunUrl = (courseId) => {
+  let courseRerunUrl;
+
+  try {
+    courseRerunUrl = new URL(`/api/contentstore/v1/course_rerun/${courseId}`, getApiBaseUrl()).href;
+  } catch (error) {
+    // If constructing URL fails, use template string as a fallback
+    courseRerunUrl = `${getApiBaseUrl()}api/contentstore/v1/course_rerun/${courseId}`;
+  }
+
+  return courseRerunUrl;
+};
+
+export const getOrganizationsUrl = getOrganizationsUrlFormat;
 
 /**
  * Get's organizations data.
