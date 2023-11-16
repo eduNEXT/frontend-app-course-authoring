@@ -4,7 +4,16 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { convertObjectToSnakeCase } from '../../utils';
 
 export const getApiBaseUrl = () => getConfig().STUDIO_BASE_URL;
-export const getCreateOrRerunCourseUrl = new URL('course/', getApiBaseUrl()).href;
+let getCreateOrRerunCourseUrlFormat;
+
+try {
+  getCreateOrRerunCourseUrlFormat = new URL('course/', getApiBaseUrl()).href;
+} catch (error) {
+  // If constructing URL fails, use template string as a fallback
+  getCreateOrRerunCourseUrlFormat = `${getApiBaseUrl()}course/`;
+}
+
+export const getCreateOrRerunCourseUrl = getCreateOrRerunCourseUrlFormat;
 export const getCourseRerunUrl = (courseId) => new URL(`/api/contentstore/v1/course_rerun/${courseId}`, getApiBaseUrl()).href;
 export const getOrganizationsUrl = new URL('organizations', getApiBaseUrl()).href;
 
