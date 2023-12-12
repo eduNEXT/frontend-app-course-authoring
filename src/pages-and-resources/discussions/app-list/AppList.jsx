@@ -72,8 +72,7 @@ const AppList = ({ intl }) => {
       selectedAppId,
       {
         enabled: enabledDiscussion,
-        postingRestrictions:
-        enabledDiscussion ? postingRestrictions : discussionRestriction.ENABLED,
+        postingRestrictions: 'enabled',
       },
     ));
   }, [courseId, selectedAppId, postingRestrictions]);
