@@ -36,7 +36,7 @@
     "@edx/brand": "npm:@edx/brand-openedx@1.1.0",
     "@edx/frontend-component-footer": "11.1.1",
     "@edx/frontend-lib-content-components": "^1.131.0",
-    "@edx/frontend-platform": "2.5.1",
+    "@edx/frontend-platform": "github:edunext/frontend-platform#dcoa/cdn-support-2.7.0",
     "@edx/paragon": "^20.38.0",
     "@fortawesome/fontawesome-svg-core": "1.2.28",
     "@fortawesome/free-brands-svg-icons": "5.11.2",
