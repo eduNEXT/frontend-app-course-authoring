@@ -43,8 +43,12 @@ describe('<PacingSection />', () => {
   });
 
   it('shows disabled radio inputs correctly', () => {
-    const pastDate = '2023-12-31';
-    const initialProps = { ...props, startDate: pastDate };
+    const todayDate = new Date();
+    const startDate = todayDate.setDate(todayDate.getDate() + 1);
+
+    // If it is wanted that radioList.disabled to be False
+    // it is necessary that the course hasn't started yet
+    const initialProps = { ...props, startDate };
     const { getAllByRole, queryAllByText } = render(
       <RootWrapper {...initialProps} />,
     );

@@ -223,15 +223,16 @@ describe('FilesAndUploads', () => {
         expect(deleteButton).not.toHaveClass('disabled');
 
         axiosMock.onDelete(`${getAssetsUrl(courseId)}mOckID1`).reply(204);
+        fireEvent.click(deleteButton);
+        expect(screen.queryByText(messages.deleteConfirmationTitle.defaultMessage)).toBeVisible();
+
+        fireEvent.click(screen.getByTestId('deletion-button'));
+        expect(screen.queryByText(messages.deleteConfirmationTitle.defaultMessage)).toBeNull();
+
         await waitFor(() => {
-          fireEvent.click(deleteButton);
-          expect(screen.getByText(messages.deleteConfirmationTitle.defaultMessage)).toBeVisible();
-
-          fireEvent.click(screen.getByText(messages.deleteFileButtonLabel.defaultMessage));
-          expect(screen.queryByText(messages.deleteConfirmationTitle.defaultMessage)).toBeNull();
-
           executeThunk(deleteAssetFile(courseId, 'mOckID1', 5), store.dispatch);
         });
+
         const deleteStatus = store.getState().assets.deletingStatus;
         expect(deleteStatus).toEqual(RequestStatus.SUCCESSFUL);
 

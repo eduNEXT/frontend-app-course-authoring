@@ -332,7 +332,7 @@ const FilesAndUploads = ({
               <Button variant="tertiary" onClick={closeDeleteConfirmation}>
                 {intl.formatMessage(messages.cancelButtonLabel)}
               </Button>
-              <Button onClick={handleBulkDelete}>
+              <Button data-testid="deletion-button" onClick={handleBulkDelete}>
                 {intl.formatMessage(messages.deleteFileButtonLabel)}
               </Button>
             </ActionRow>
