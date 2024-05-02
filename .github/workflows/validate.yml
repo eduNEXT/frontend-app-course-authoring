@@ -16,7 +16,9 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VER }}
-    - run: make validate.ci
+    - run: |
+        export NODE_OPTIONS="--max_old_space_size=4096"
+        make validate.ci
     - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:
