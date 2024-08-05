@@ -87,8 +87,8 @@ describe('<TaxonomyListPage />', () => {
     // Simulate an API request that times out:
     axiosMock.onGet(listTaxonomiesUrl).reply(new Promise(() => {}));
     await act(async () => {
-      const { getByRole } = render(<RootWrapper />);
-      const spinner = getByRole('status');
+      const { findByRole } = render(<RootWrapper />);
+      const spinner = await findByRole('status');
       expect(spinner.textContent).toEqual('Loading');
     });
   });
@@ -96,9 +96,9 @@ describe('<TaxonomyListPage />', () => {
   it('shows the data table after the query is complete', async () => {
     axiosMock.onGet(listTaxonomiesUrl).reply(200, { results: taxonomies, canAddTaxonomy: false });
     await act(async () => {
-      const { getByTestId, queryByText } = render(<RootWrapper />);
+      const { findByTestId, queryByText } = render(<RootWrapper />);
       await waitFor(() => { expect(queryByText('Loading')).toEqual(null); });
-      expect(getByTestId('taxonomy-card-1')).toBeInTheDocument();
+      expect(await findByTestId('taxonomy-card-1')).toBeInTheDocument();
     });
   });
 
