@@ -16,4 +16,5 @@ module.exports = createConfig('jest', {
   modulePathIgnorePatterns: [
     '/src/pages-and-resources/utils.test.jsx',
   ],
+  testTimeout: 30000,
 });

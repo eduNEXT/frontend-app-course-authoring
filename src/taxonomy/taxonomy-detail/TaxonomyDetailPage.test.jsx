@@ -62,11 +62,11 @@ describe('<TaxonomyDetailPage />', () => {
     queryClient.clear();
   });
 
-  it('shows the spinner before the query is complete', () => {
+  it('shows the spinner before the query is complete', async () => {
     // Use unresolved promise to keep the Loading visible
     axiosMock.onGet(apiUrls.taxonomy(1)).reply(() => new Promise());
-    const { getByRole } = render(<RootWrapper />);
-    const spinner = getByRole('status');
+    const { findByRole } = render(<RootWrapper />);
+    const spinner = await findByRole('status');
     expect(spinner.textContent).toEqual('Loading...');
   });
 

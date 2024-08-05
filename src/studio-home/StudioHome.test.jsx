@@ -49,7 +49,7 @@ const RootWrapper = () => (
   </AppProvider>
 );
 
-describe('<StudioHome />', async () => {
+describe('<StudioHome />', () => {
   describe('api fetch fails', () => {
     beforeEach(async () => {
       initializeMockApp({
@@ -138,8 +138,8 @@ describe('<StudioHome />', async () => {
       });
 
       await act(async () => {
-        const { getByRole } = render(<RootWrapper />);
-        const spinner = getByRole('status');
+        const { findByRole } = render(<RootWrapper />);
+        const spinner = await findByRole('status');
         expect(spinner.textContent).toEqual('Loading...');
       });
     });
