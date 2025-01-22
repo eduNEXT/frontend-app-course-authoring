@@ -1,3 +1,3 @@
 .component-preview-modal {
-  min-width: map-get($grid-breakpoints, "md");
+  min-width: (--pgn-size-breakpoint-min-width-md);
 }
