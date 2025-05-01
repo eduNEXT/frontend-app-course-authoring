@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useContext, useMemo, useState,
+  useCallback, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
@@ -16,7 +16,7 @@ import {
 
 import { tail, keyBy } from 'lodash';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loop } from '@openedx/paragon/icons';
+import { Loop, Warning } from '@openedx/paragon/icons';
 import messages from './messages';
 import previewChangesMessages from '../course-unit/preview-changes/messages';
 import { courseLibrariesQueryKeys, useEntityLinks } from './data/apiHooks';
@@ -35,6 +35,7 @@ import { useLoadOnScroll } from '../hooks';
 import DeleteModal from '../generic/delete-modal/DeleteModal';
 import { PublishableEntityLink } from './data/api';
 import AlertError from '../generic/alert-error';
+import AlertMessage from '../generic/alert-message';
 
 interface Props {
   courseId: string;
@@ -99,8 +100,10 @@ const BlockCard: React.FC<BlockCardProps> = ({ info, actions }) => {
 
 const ComponentReviewList = ({
   outOfSyncComponents,
+  onSearchUpdate,
 }: {
   outOfSyncComponents: PublishableEntityLink[];
+  onSearchUpdate: () => void;
 }) => {
   const intl = useIntl();
   const { showToast } = useContext(ToastContext);
@@ -108,15 +111,23 @@ const ComponentReviewList = ({
   // ignore changes confirmation modal toggle.
   const [isConfirmModalOpen, openConfirmModal, closeConfirmModal] = useToggle(false);
   const {
-    hits,
+    hits: downstreamInfo,
     isLoading: isIndexDataLoading,
+    searchKeywords,
     hasError,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useSearchContext();
-
-  const downstreamInfo = hits as ContentHit[];
+  } = useSearchContext() as {
+    hits: ContentHit[];
+    isLoading: boolean;
+    searchKeywords: string;
+    searchSortOrder: SearchSortOption;
+    hasError: boolean;
+    hasNextPage: boolean | undefined,
+    isFetchingNextPage: boolean;
+    fetchNextPage: () => void;
+  };
 
   useLoadOnScroll(
     hasNextPage,
@@ -131,12 +142,18 @@ const ComponentReviewList = ({
   );
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    if (searchKeywords) {
+      onSearchUpdate();
+    }
+  }, [searchKeywords]);
+
   // Toggle preview changes modal
   const [isModalOpen, openModal, closeModal] = useToggle(false);
   const acceptChangesMutation = useAcceptLibraryBlockChanges();
   const ignoreChangesMutation = useIgnoreLibraryBlockChanges();
 
-  const setSelectedBlockData = useCallback((info: ContentHit) => {
+  const setSeletecdBlockData = (info: ContentHit) => {
     setBlockData({
       displayName: info.displayName,
       downstreamBlockId: info.usageKey,
@@ -144,18 +161,17 @@ const ComponentReviewList = ({
       upstreamBlockVersionSynced: outOfSyncComponentsByKey[info.usageKey].versionSynced,
       isVertical: info.blockType === 'vertical',
     });
-  }, [outOfSyncComponentsByKey]);
-
+  };
   // Show preview changes on review
   const onReview = useCallback((info: ContentHit) => {
-    setSelectedBlockData(info);
+    setSeletecdBlockData(info);
     openModal();
-  }, [setSelectedBlockData, openModal]);
+  }, [setSeletecdBlockData, openModal]);
 
   const onIgnoreClick = useCallback((info: ContentHit) => {
-    setSelectedBlockData(info);
+    setSeletecdBlockData(info);
     openConfirmModal();
-  }, [setSelectedBlockData, openConfirmModal]);
+  }, [setSeletecdBlockData, openConfirmModal]);
 
   const reloadLinks = useCallback((usageKey: string) => {
     const courseKey = outOfSyncComponentsByKey[usageKey].downstreamContextKey;
@@ -257,14 +273,20 @@ const ComponentReviewList = ({
           )}
         />
       ))}
-      {blockData && (
-        <PreviewLibraryXBlockChanges
-          blockData={blockData}
-          isModalOpen={isModalOpen}
-          closeModal={closeModal}
-          postChange={postChange}
-        />
-      )}
+      <PreviewLibraryXBlockChanges
+        blockData={blockData}
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        postChange={postChange}
+        alertNode={(
+          <AlertMessage
+            show
+            variant="warning"
+            icon={Warning}
+            title={intl.formatMessage(messages.olderVersionPreviewAlert)}
+          />
+        )}
+      />
       <DeleteModal
         isOpen={isConfirmModalOpen}
         close={closeConfirmModal}
@@ -281,16 +303,36 @@ const ComponentReviewList = ({
 const ReviewTabContent = ({ courseId }: Props) => {
   const intl = useIntl();
   const {
-    data: outOfSyncComponents,
+    data: linkPages,
     isLoading: isSyncComponentsLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
     isError,
     error,
   } = useEntityLinks({ courseId, readyToSync: true });
 
+  const outOfSyncComponents = useMemo(
+    () => linkPages?.pages?.reduce((links, page) => [...links, ...page.results], []) ?? [],
+    [linkPages],
+  );
   const downstreamKeys = useMemo(
     () => outOfSyncComponents?.map(link => link.downstreamUsageKey),
     [outOfSyncComponents],
   );
+
+  useLoadOnScroll(
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    true,
+  );
+
+  const onSearchUpdate = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   const disableSortOptions = [
     SearchSortOption.RELEVANCE,
@@ -322,6 +364,7 @@ const ReviewTabContent = ({ courseId }: Props) => {
       </ActionRow>
       <ComponentReviewList
         outOfSyncComponents={outOfSyncComponents}
+        onSearchUpdate={onSearchUpdate}
       />
     </SearchContextProvider>
   );
