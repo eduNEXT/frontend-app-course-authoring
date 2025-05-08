@@ -91,11 +91,7 @@ export const xblockQueryKeys = {
   componentMetadata: (usageKey: string) => [...xblockQueryKeys.xblock(usageKey), 'componentMetadata'],
   componentDownstreamLinks: (usageKey: string) => [...xblockQueryKeys.xblock(usageKey), 'downstreamLinks'],
 
-  /**
-   * Predicate used to invalidate all metadata only (not OLX, fields, assets, etc.).
-   * Affects all libraries; we could do a more complex version that affects only one library, but it would require
-   * introspecting the usage keys.
-   */
+  /** Predicate used to invalidate all metadata only */
   allComponentMetadata: (query: Query) => query.queryKey[0] === 'xblock' && query.queryKey[2] === 'componentMetadata',
 };
 
@@ -212,32 +208,23 @@ export const useContentLibraryV2List = (customParams: api.GetLibrariesV2CustomPa
   })
 );
 
-/** Publish all changes in the library. */
 export const useCommitLibraryChanges = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.commitLibraryChanges,
     onSettled: (_data, _error, libraryId) => {
-      // Invalidate all content-related metadata and search results for the whole library.
       queryClient.invalidateQueries({ queryKey: libraryAuthoringQueryKeys.contentLibrary(libraryId) });
-      queryClient.invalidateQueries({ predicate: (query) => libraryQueryPredicate(query, libraryId) });
-      // For XBlocks, the only thing we need to invalidate is the metadata which includes "has unpublished changes"
-      queryClient.invalidateQueries({ predicate: xblockQueryKeys.allComponentMetadata });
     },
   });
 };
 
-/** Discard all un-published changes in the library */
 export const useRevertLibraryChanges = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.revertLibraryChanges,
     onSettled: (_data, _error, libraryId) => {
-      // Invalidate all content-related metadata and search results for the whole library.
       queryClient.invalidateQueries({ queryKey: libraryAuthoringQueryKeys.contentLibrary(libraryId) });
       queryClient.invalidateQueries({ predicate: (query) => libraryQueryPredicate(query, libraryId) });
-      // For XBlocks, the only thing we need to invalidate is the metadata which includes "has unpublished changes"
-      queryClient.invalidateQueries({ predicate: xblockQueryKeys.allComponentMetadata });
     },
   });
 };
@@ -641,11 +628,11 @@ export const useRestoreContainer = (containerId: string) => {
 /**
  * Get the metadata and children for a container in a library
  */
-export const useContainerChildren = (containerId?: string, published: boolean = false) => (
+export const useContainerChildren = (containerId?: string) => (
   useQuery({
     enabled: !!containerId,
     queryKey: libraryAuthoringQueryKeys.containerChildren(containerId!),
-    queryFn: () => api.getLibraryContainerChildren(containerId!, published),
+    queryFn: () => api.getLibraryContainerChildren(containerId!),
     structuralSharing: (oldData: api.LibraryBlockMetadata[], newData: api.LibraryBlockMetadata[]) => {
       // This just sets `isNew` flag to new children components
       if (oldData) {
