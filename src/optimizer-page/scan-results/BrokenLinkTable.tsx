@@ -1,5 +1,5 @@
 import {
-  Card, Icon, OverlayTrigger, Table, Tooltip,
+  Card, Icon, DataTable,
 } from '@openedx/paragon';
 import {
   OpenInNew, Lock, LinkOff, InfoOutline,
@@ -74,96 +74,100 @@ type TableData = {
 
 const BrokenLinkTable: FC<BrokenLinkTableProps> = ({
   unit,
-  showLockedLinks,
+  filters,
 }) => {
-  const intl = useIntl();
+  const brokenLinkList = unit.blocks.reduce(
+    (
+      acc: TableData,
+      block,
+    ) => {
+      if (
+        filters.brokenLinks
+            || (!filters.brokenLinks && !filters.externalForbiddenLinks && !filters.lockedLinks)
+      ) {
+        const blockBrokenLinks = block.brokenLinks.map((link) => ({
+          Links: (
+            <LinksCol
+              block={{ url: block.url, displayName: block.displayName || 'Go to block' }}
+              href={link}
+            />
+          ),
+          status: (
+            <CustomIcon
+              icon={LinkOff}
+              message1={messages.brokenLabel}
+              message2={messages.brokenInfoTooltip}
+            />
+          ),
+        }));
+        acc.push(...blockBrokenLinks);
+      }
+
+      if (
+        filters.lockedLinks
+            || (!filters.brokenLinks && !filters.externalForbiddenLinks && !filters.lockedLinks)
+      ) {
+        const blockLockedLinks = block.lockedLinks.map((link) => ({
+          Links: (
+            <LinksCol
+              block={{ url: block.url, displayName: block.displayName || 'Go to block' }}
+              href={link}
+            />
+          ),
+          status: (
+            <CustomIcon
+              icon={lockedIcon}
+              message1={messages.lockedLabel}
+              message2={messages.lockedInfoTooltip}
+            />
+          ),
+        }));
+
+        acc.push(...blockLockedLinks);
+      }
+
+      if (
+        filters.externalForbiddenLinks
+            || (!filters.brokenLinks && !filters.externalForbiddenLinks && !filters.lockedLinks)
+      ) {
+        const externalForbiddenLinks = block.externalForbiddenLinks.map((link) => ({
+          Links: (
+            <LinksCol
+              block={{ url: block.url, displayName: block.displayName || 'Go to block' }}
+              href={link}
+            />
+          ),
+          status: (
+            <CustomIcon
+              icon={ManualIcon}
+              message1={messages.manualLabel}
+              message2={messages.manualInfoTooltip}
+            />
+          ),
+        }));
+
+        acc.push(...externalForbiddenLinks);
+      }
+
+      return acc;
+    },
+    [],
+  );
+
   return (
-    <Card className="unit-card rounded-sm pt-2 pl-3 pr-4 mb-2.5">
+    <Card className="unit-card rounded-sm pt-2 pb-3 pl-3 pr-4 mb-2.5">
       <p className="unit-header">{unit.displayName}</p>
-      <Table
-        data={unit.blocks.reduce(
-          (
-            acc: TableData,
-            block,
-          ) => {
-            const blockBrokenLinks = block.brokenLinks.map((link) => ({
-              blockLink: <GoToBlock block={block} />,
-              blockDisplayName: block.displayName || '',
-              brokenLink: <BrokenLinkHref href={link} />,
-              status: (
-                <span className="link-status-text">
-                  <Icon src={LinkOff} className="broken-link-icon" />
-                  <span>
-                    {intl.formatMessage(messages.brokenLinkStatus)}
-                  </span>
-                </span>
-              ),
-            }));
-            acc.push(...blockBrokenLinks);
-
-            if (showLockedLinks) {
-              const blockLockedLinks = block.lockedLinks.map((link) => ({
-                blockLink: <GoToBlock block={block} />,
-                blockDisplayName: block.displayName || '',
-                brokenLink: <BrokenLinkHref href={link} />,
-                status: (
-                  <span className="link-status-text">
-                    <Icon src={Lock} className="lock-icon" />
-                    {intl.formatMessage(messages.lockedLinkStatus)}{' '}
-                    <LockedInfoIcon />
-                  </span>
-                ),
-              }));
-
-              acc.push(...blockLockedLinks);
-            }
-
-            if (block.externalForbiddenLinks?.length > 0) {
-              const recommendedManualCheckHeading = {
-                blockLink: <div />,
-                blockDisplayName: <RecommendedManualCheckHeading />,
-                brokenLink: <div />,
-                status: <div />,
-              };
-              const externalForbiddenLinks = block.externalForbiddenLinks.map((link) => ({
-                blockLink: <GoToBlock block={block} />,
-                blockDisplayName: block.displayName || '',
-                brokenLink: <BrokenLinkHref href={link} />,
-                status: <div />,
-              }));
-
-              acc.push(recommendedManualCheckHeading);
-              acc.push(...externalForbiddenLinks);
-            }
-
-            return acc;
-          },
-          [],
-        )}
+      <DataTable
+        data={brokenLinkList}
+        itemCount={brokenLinkList.length}
         columns={[
           {
-            key: 'blockDisplayName',
-            columnSortable: false,
+            accessor: 'Links',
+            width: 'col-9',
+          },
+          {
+            accessor: 'status',
             width: 'col-3',
-            hideHeader: true,
-          },
-          {
-            key: 'blockLink',
-            columnSortable: false,
-            width: 'col-3',
-            hideHeader: true,
-          },
-          {
-            key: 'brokenLink',
-            columnSortable: false,
-            width: 'col-6',
-            hideHeader: true,
-          },
-          {
-            key: 'status',
-            columnSortable: false,
-            width: 'col-6',
-            hideHeader: true,
           },
         ]}
       />
