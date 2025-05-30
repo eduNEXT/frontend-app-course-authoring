@@ -14,7 +14,7 @@ const ExperimentCardGroup = ({ groups }) => {
           data-testid="configuration-card-content-experiment-stack"
           key={item.id}
         >
-          <Truncate lines={1}>{item.name}</Truncate>
+          <Truncate.Deprecated lines={1}>{item.name}</Truncate.Deprecated>
           <span>{percentage}</span>
         </div>
       ))}

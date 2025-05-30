@@ -378,7 +378,7 @@ const PageAlerts = ({
             dismissError={() => dispatch(dismissError(msgObj.key))}
           >
             <Alert.Heading>{msgObj.title}</Alert.Heading>
-            {msgObj.desc && <Truncate lines={2}>{msgObj.desc}</Truncate>}
+            {msgObj.desc && <Truncate.Deprecated lines={2}>{msgObj.desc}</Truncate.Deprecated>}
           </ErrorAlert>
         ) : (
           <Alert
@@ -387,7 +387,7 @@ const PageAlerts = ({
             key={msgObj.key}
           >
             <Alert.Heading>{msgObj.title}</Alert.Heading>
-            {msgObj.desc && <Truncate lines={2}>{msgObj.desc}</Truncate>}
+            {msgObj.desc && <Truncate.Deprecated lines={2}>{msgObj.desc}</Truncate.Deprecated>}
           </Alert>
         )
       ))
