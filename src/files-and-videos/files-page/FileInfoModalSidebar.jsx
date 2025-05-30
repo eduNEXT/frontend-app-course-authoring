@@ -57,9 +57,9 @@ const FileInfoModalSidebar = ({
       </div>
       <ActionRow>
         <div style={{ wordBreak: 'break-word' }}>
-          <Truncate lines={1}>
+          <Truncate.Deprecated lines={1}>
             {asset?.portableUrl}
-          </Truncate>
+          </Truncate.Deprecated>
         </div>
         <ActionRow.Spacer />
         <IconButton
@@ -74,9 +74,9 @@ const FileInfoModalSidebar = ({
       </div>
       <ActionRow>
         <div style={{ wordBreak: 'break-word' }}>
-          <Truncate lines={1}>
+          <Truncate.Deprecated lines={1}>
             {asset?.externalUrl}
-          </Truncate>
+          </Truncate.Deprecated>
         </div>
         <ActionRow.Spacer />
         <IconButton
