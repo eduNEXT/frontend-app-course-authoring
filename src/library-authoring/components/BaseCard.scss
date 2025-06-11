@@ -8,21 +8,11 @@
     }
 
     &.selected:not(:focus) {
-      border: 2px var(--pgn-color-gray-700) solid;
-
-      .library-item-header {
-        border-top-left-radius: calc(.375rem - 2px);
-        border-top-right-radius: calc(.375rem - 2px);
-      }
+      outline: 2px var(--pgn-color-gray-700) solid;
     }
 
     &.selected:focus {
-      border: 3px var(--pgn-color-gray-700) solid;
-
-      .library-item-header {
-        border-top-left-radius: calc(.375rem - 3px);
-        border-top-right-radius: calc(.375rem - 3px);
-      }
+      outline: 3px var(--pgn-color-gray-700) solid;
     }
 
     &:not(.selected):focus {
