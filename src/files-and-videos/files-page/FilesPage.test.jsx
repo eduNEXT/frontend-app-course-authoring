@@ -196,7 +196,7 @@ describe('FilesAndUploads', () => {
           await mockStore(RequestStatus.SUCCESSFUL);
           axiosMock.onGet(`${getAssetsUrl(courseId)}?display_name=download.png&page_size=1`).reply(200, { assets: [] });
           axiosMock.onPost(getAssetsUrl(courseId)).reply(200, generateNewAssetApiResponse());
-          const addFilesButton = screen.getByLabelText('file-input');
+          const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
           userEvent.upload(addFilesButton, file);
           await executeThunk(validateAssetFiles(courseId, [file]), store.dispatch);
           await waitFor(() => {
@@ -212,7 +212,7 @@ describe('FilesAndUploads', () => {
           axiosMock.onGet(
             `${getAssetsUrl(courseId)}?display_name=mOckID6&page_size=1`,
           ).reply(200, { assets: [{ display_name: 'mOckID6' }] });
-          const addFilesButton = screen.getByLabelText('file-input');
+          const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
           userEvent.upload(addFilesButton, file);
           await executeThunk(validateAssetFiles(courseId, [file]), store.dispatch);
           expect(screen.getByText(filesPageMessages.overwriteConfirmMessage.defaultMessage)).toBeVisible();
@@ -233,7 +233,7 @@ describe('FilesAndUploads', () => {
           };
 
           axiosMock.onPost(getAssetsUrl(courseId)).reply(200, responseData);
-          const addFilesButton = screen.getByLabelText('file-input');
+          const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
           userEvent.upload(addFilesButton, file);
           await executeThunk(validateAssetFiles(courseId, [file]), store.dispatch);
 
@@ -257,7 +257,7 @@ describe('FilesAndUploads', () => {
           axiosMock.onGet(
             `${getAssetsUrl(courseId)}?display_name=mOckID6&page_size=1`,
           ).reply(200, { assets: [{ display_name: 'mOckID6' }] });
-          const addFilesButton = screen.getByLabelText('file-input');
+          const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
           userEvent.upload(addFilesButton, file);
           await executeThunk(validateAssetFiles(courseId, [file]), store.dispatch);
 
@@ -549,7 +549,7 @@ describe('FilesAndUploads', () => {
         await mockStore(RequestStatus.SUCCESSFUL);
         axiosMock.onGet(`${getAssetsUrl(courseId)}?display_name=download.png&page_size=1`).reply(200, { assets: [] });
         axiosMock.onPost(getAssetsUrl(courseId)).reply(413, { error: errorMessage });
-        const addFilesButton = screen.getByLabelText('file-input');
+        const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
         userEvent.upload(addFilesButton, file);
         await waitFor(() => {
           const addStatus = store.getState().assets.addingStatus;
@@ -562,7 +562,7 @@ describe('FilesAndUploads', () => {
       it('404 validation should show error', async () => {
         await mockStore(RequestStatus.SUCCESSFUL);
         axiosMock.onGet(`${getAssetsUrl(courseId)}?display_name=download.png&page_size=1`).reply(404);
-        const addFilesButton = screen.getByLabelText('file-input');
+        const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
         userEvent.upload(addFilesButton, file);
         await executeThunk(addAssetFile(courseId, file, 1), store.dispatch);
         const addStatus = store.getState().assets.addingStatus;
@@ -575,7 +575,7 @@ describe('FilesAndUploads', () => {
         await mockStore(RequestStatus.SUCCESSFUL);
         axiosMock.onGet(`${getAssetsUrl(courseId)}?display_name=download.png&page_size=1`).reply(200, { assets: [] });
         axiosMock.onPost(getAssetsUrl(courseId)).reply(404);
-        const addFilesButton = screen.getByLabelText('file-input');
+        const addFilesButton = screen.getByLabelText(messages.fileInputAriaLabel.defaultMessage);
         userEvent.upload(addFilesButton, file);
         await executeThunk(addAssetFile(courseId, file, 1), store.dispatch);
         const addStatus = store.getState().assets.addingStatus;
