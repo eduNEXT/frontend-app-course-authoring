@@ -35,6 +35,7 @@ import {
   getSavingStatus,
   getSequenceStatus,
   getStaticFileNotices,
+  getLoadingStatuses,
 } from './data/selectors';
 import {
   changeEditTitleFormOpen,
@@ -51,6 +52,7 @@ export const useCourseUnit = ({ courseId, blockId }) => {
   const [isMoveModalOpen, openMoveModal, closeMoveModal] = useToggle(false);
 
   const courseUnit = useSelector(getCourseUnitData);
+  const courseUnitLoadingStatus = useSelector(getLoadingStatuses);
   const savingStatus = useSelector(getSavingStatus);
   const isLoading = useSelector(getIsLoading);
   const errorMessage = useSelector(getErrorMessage);
@@ -215,9 +217,28 @@ export const useCourseUnit = ({ courseId, blockId }) => {
     }
   }, [isMoveModalOpen]);
 
+  useEffect(() => {
+    const handlePageRefreshUsingStorage = (event) => {
+      // ignoring tests for if block, because it triggers when someone
+      // edits the component using editor which has a separate store
+      /* istanbul ignore next */
+      if (event.key === 'courseRefreshTriggerOnComponentEditSave') {
+        dispatch(fetchCourseSectionVerticalData(blockId, sequenceId));
+        dispatch(fetchCourseVerticalChildrenData(blockId, isSplitTestType));
+        localStorage.removeItem(event.key);
+      }
+    };
+
+    window.addEventListener('storage', handlePageRefreshUsingStorage);
+    return () => {
+      window.removeEventListener('storage', handlePageRefreshUsingStorage);
+    };
+  }, [blockId, sequenceId, isSplitTestType]);
+
   return {
     sequenceId,
     courseUnit,
+    courseUnitLoadingStatus,
     unitTitle,
     unitCategory,
     errorMessage,
